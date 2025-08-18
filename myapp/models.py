@@ -29,6 +29,17 @@ class Vocabulary(models.Model):
     def __str__ (self):
         return f"{self.word} = {self.translation}"
     
+class QuizQuestion(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="questions")
+    question_text = models.CharField()
+    correct_answer = models.CharField(max_length=200)
+    option_a = models.CharField(max_length=200)
+    option_b = models.CharField(max_length=200)
+    option_c = models.CharField(max_length=200)
+
+    def __str__ (self):
+        return f"Q: {self.question_text[:100]}"
+
 
     
 
