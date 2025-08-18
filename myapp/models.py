@@ -8,3 +8,18 @@ class Language(models.Model):
 
     def __str__ (self):
         return self.name
+    
+class Lesson(models.Model):
+    language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name="lessons")
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    order = models.PositiveBigIntegerField()
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__ (self):
+        return f"{self.language.name} - {self.title}"
+    
+
+
