@@ -21,5 +21,15 @@ class Lesson(models.Model):
     def __str__ (self):
         return f"{self.language.name} - {self.title}"
     
+class Vocabulary(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="vocab")
+    word = models.CharField(max_length=150)
+    translation = models.CharField(max_length=150)
+
+    def __str__ (self):
+        return f"{self.word} = {self.translation}"
+    
+
+    
 
 
