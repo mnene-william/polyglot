@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import *
+from .forms import *
+from django.contrib.auth import login, logout
+
 
 # Create your views here.
 def home(request):
@@ -78,5 +81,21 @@ def quiz_result(request, lesson_id):
         request.session.pop(key, None)
 
     return render(request, 'quiz_result.html', {'lesson': lesson, 'score': score, 'total':total, 'percent': up.score})
+
+
+
+def sign_up(request):
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+        else:
+            form = UserCreationForm()
+
+        return render(request, 'sign_up.html', {'form': form})
 
 
