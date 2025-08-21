@@ -87,15 +87,15 @@ def quiz_result(request, lesson_id):
 def sign_up(request):
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegistrationForm(request.POST)
 
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('home')
-        else:
-            form = UserCreationForm()
+    else:
+        form = RegistrationForm()
 
-        return render(request, 'sign_up.html', {'form': form})
+    return render(request, 'sign_up.html', {'form': form})
 
 

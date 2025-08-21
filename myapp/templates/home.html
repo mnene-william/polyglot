@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Available Languages</h2>
+    <div class="list-group">
+        {% for lang in languages %}
+           <a href="{% url 'language_detail' lang.id %}" class="list-group-item list-group-item-action">
+              {{ lang.name }} ({{ lang.code }})
+           </a>
+
+        {% empty %}
+             <p>No languages yet.</p>
+        {% endfor %}
+    </div>
+{% endblock %}
