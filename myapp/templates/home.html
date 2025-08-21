@@ -1,15 +1,57 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Available Languages</h2>
-    <div class="list-group">
-        {% for lang in languages %}
-           <a href="{% url 'language_detail' lang.id %}" class="list-group-item list-group-item-action">
-              {{ lang.name }} ({{ lang.code }})
-           </a>
+<div class="relative bg-teal-600 text-white py-24 md:py-32">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">
+            Unlock a World of Languages
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 font-light">
+            Start your journey to fluency with our expert-crafted lessons and interactive quizzes.
+        </p>
+        <a href="{% url 'sign_up' %}" class="bg-white text-teal-600 font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:bg-gray-100 transition-colors duration-300">
+            Start Learning
+        </a>
+    </div>
+</div>
 
-        {% empty %}
-             <p>No languages yet.</p>
+<div class="container mx-auto px-4 py-16">
+    <h2 class="text-4xl font-bold text-gray-800 text-center mb-12">
+        Explore Our Languages
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for language in languages %}
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center border-t-4 border-indigo-500 hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-2xl font-semibold text-gray-900 mb-2">{{ language.name }}</h3>
+            <p class="text-gray-600 mb-4">{{ language.description }}</p>
+            <a href="{% url 'language_detail' pk=language.pk %}" class="text-indigo-600 font-medium hover:text-indigo-500 transition-colors duration-300">
+                View Lessons &rarr;
+            </a>
+        </div>
         {% endfor %}
     </div>
+</div>
+
+<div class="bg-gray-100 py-16">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-gray-800 text-center mb-12">
+            What Our Learners Say
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for review in reviews %}
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-teal-500">
+                <p class="text-gray-700 mb-4 italic">"{{ review.text }}"</p>
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-gray-900 mr-2">{{ review.rating }}</span>
+                    <span class="text-yellow-500">
+                        ⭐⭐⭐⭐⭐
+                    </span>
+                </div>
+                <p class="text-sm font-medium text-gray-500 mt-2">- {{ review.author }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 {% endblock %}

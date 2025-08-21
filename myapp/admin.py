@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Language, Lesson, Vocabulary, QuizQuestion, UserProgress
+from .models import Language, Lesson, Vocabulary, QuizQuestion, UserProgress, Review
 
 @admin.register(Language)
 class LanguageAdmin(admin.ModelAdmin):
@@ -26,6 +26,13 @@ class QuizQuestionAdmin(admin.ModelAdmin):
 class UserProgressAdmin(admin.ModelAdmin):
     list_display = ("user","lesson","score","completed","updated_at")
     list_filter = ("completed","lesson")
+
+@admin.register(Review)
+class Review(admin.ModelAdmin):
+    list_display = ('author', 'text', 'rating', 'language')
+    list_filter = ('language', 'rating')
+    search_fields = ('author', 'text')
+
 
 
 # Register your models here.

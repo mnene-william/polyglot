@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-xl p-6 md:p-10 mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{{ language.name }}</h1>
+        <p class="text-lg text-gray-700">{{ language.description }}</p>
+    </div>
+
+    <div>
+        <h2 class="text-2xl font-bold text-teal-500 mb-4">Lessons</h2>
+        <div class="space-y-4">
+            {% for lesson in lessons %}
+            <a href="{% url 'lesson_detail' pk=lesson.pk %}" class="block">
+                <div class="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300">
+                    <p class="text-lg font-medium text-gray-800">{{ forloop.counter }}. {{ lesson.title }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="mt-8 text-center">
+        <a href="{% url 'home' %}" class="font-medium text-indigo-600 hover:text-indigo-500 transition duration-300">
+            &larr; Back to languages
+        </a>
+    </div>
+</div>
+{% endblock %}

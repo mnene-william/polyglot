@@ -31,7 +31,7 @@ class Vocabulary(models.Model):
     
 class QuizQuestion(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="questions")
-    question_text = models.CharField()
+    question_text = models.CharField(max_length=500)
     correct_answer = models.CharField(max_length=200)
     option_a = models.CharField(max_length=200)
     option_b = models.CharField(max_length=200)

@@ -7,26 +7,34 @@ from django.contrib.auth import login, logout
 
 # Create your views here.
 def home(request):
-    langauges = Language.objects.all()
-    return render(request, 'home.html', {'languages':langauges})
+    languages = Language.objects.all()
+    reviews = Review.objects.all()
+
+    return render(request, 'home.html', {'languages': languages, 'reviews':reviews})
+     
 
 def language_detail(request, pk):
     language = get_object_or_404(Language, pk=pk)
-    return render(request, 'language_detail.html', {'language:':language, 'lesson':language.lessons.all()})
+
+    lessons = language.lessons.all()
+
+    return render(request, 'language_detail.html', {'language':language, 'lessons': lessons})
 
 
 
 def lesson_detail(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk)
 
-    return render(request, 'lesson_detail.html', {'lesson': lesson, 'vocab': lesson.vocabulary_set.all()})
+    vocabularies = lesson.vocabulary_set.all()
+
+    return render(request, 'lesson_detail.html', {'lesson': lesson, 'vocabularies': vocabularies})
 
 
 @login_required
 def quiz_view(request, lesson_id):
     lesson = get_object_or_404(Lesson, pk=lesson_id)
 
-    question_ids = list(lesson.questions.values_list('id'))
+    question_ids = list(lesson.quiz_questions_set.values_list('id', flat=True))
     
     if 'q_index' not in request.session or request.GET.get('restart'):
         request.session['q_index'] = 0
@@ -68,7 +76,7 @@ def quiz_result(request, lesson_id):
     total = len(request.session.get('question_ids', []))
 
 
-    up = UserProgress.objects.get_or_create(user=request.user, lesson=lesson)
+    up, created = UserProgress.objects.get_or_create(user=request.user, lesson=lesson)
 
     up.score = int(score / max(total, 1) * 100)
     
