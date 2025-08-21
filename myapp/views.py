@@ -34,7 +34,7 @@ def lesson_detail(request, pk):
 def quiz_view(request, lesson_id):
     lesson = get_object_or_404(Lesson, pk=lesson_id)
 
-    question_ids = list(lesson.quiz_questions_set.values_list('id', flat=True))
+    question_ids = list(lesson.questions.values_list('id', flat=True))
     
     if 'q_index' not in request.session or request.GET.get('restart'):
         request.session['q_index'] = 0
@@ -61,7 +61,7 @@ def quiz_view(request, lesson_id):
 
         request.session['q_index'] = index + 1
 
-        return redirect('quiz', lesson_id=lesson.id)
+        return redirect('quiz_view', lesson_id=lesson.id)
     
     return render(request, 'quiz_view.html', {'lesson':lesson, 'question': question, 'index': index+1, 'total': len(question_ids)})
 
