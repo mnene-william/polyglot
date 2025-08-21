@@ -25,7 +25,7 @@ def language_detail(request, pk):
 def lesson_detail(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk)
 
-    vocabularies = lesson.vocabulary_set.all()
+    vocabularies = lesson.vocab.all()
 
     return render(request, 'lesson_detail.html', {'lesson': lesson, 'vocabularies': vocabularies})
 
@@ -63,7 +63,7 @@ def quiz_view(request, lesson_id):
 
         return redirect('quiz', lesson_id=lesson.id)
     
-    return render(request, 'quiz.html', {'lesson':lesson, 'question': question, 'index': index+1, 'total': len(question_ids)})
+    return render(request, 'quiz_view.html', {'lesson':lesson, 'question': question, 'index': index+1, 'total': len(question_ids)})
 
 
 @login_required

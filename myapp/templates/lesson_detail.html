@@ -2,28 +2,41 @@
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
+    
     <div class="bg-white rounded-lg shadow-xl p-6 md:p-10 mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{{ language.name }}</h1>
-        <p class="text-lg text-gray-700">{{ language.description }}</p>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{{ lesson.title }}</h1>
+        <p class="text-lg text-gray-700">{{ lesson.description }}</p>
     </div>
 
+    {% if vocabularies %}
     <div>
-        <h2 class="text-2xl font-bold text-teal-500 mb-4">Lessons</h2>
+        <h2 class="text-2xl font-bold text-teal-500 mb-4">Vocabulary</h2>
         <div class="space-y-4">
-            {% for lesson in lessons %}
-            <a href="{% url 'lesson_detail' pk=lesson.pk %}" class="block">
-                <div class="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300">
-                    <p class="text-lg font-medium text-gray-800">{{ forloop.counter }}. {{ lesson.title }}</p>
-                </div>
-            </a>
+            {% for vocab in vocabularies %}
+            <div class="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200">
+                <p class="text-lg font-medium text-gray-800">{{ vocab.word }} = {{ vocab.translation }}</p>
+            </div>
             {% endfor %}
         </div>
     </div>
-    
+
+    {% endif %}
+
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold text-teal-500 mb-4">Quiz</h2>
+        <div class="space-y-4">
+            <a href="{% url 'quiz_view' lesson_id=lesson.pk %}" class="bg-indigo-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-indigo-700 transition duration-300">
+                Start Quiz &rarr;
+            </a>
+        </div>
+    </div>
+
+
     <div class="mt-8 text-center">
-        <a href="{% url 'home' %}" class="font-medium text-indigo-600 hover:text-indigo-500 transition duration-300">
-            &larr; Back to languages
+        <a href="{% url 'language_detail' pk=lesson.language.pk %}" class="font-medium text-indigo-600 hover:text-indigo-500 transition duration-300">
+            &larr; Back to lessons
         </a>
     </div>
+
 </div>
 {% endblock %}
