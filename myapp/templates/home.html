@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="relative bg-teal-600 text-white py-24 md:py-32">
-    <div class="container mx-auto px-4 text-center">
-        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">
+<div class="relative bg-teal-600 text-white py-24 md:py-32 overflow-hidden">
+    <div class="container mx-auto px-4 text-center relative z-10">
+        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight mb-4">
             Unlock a World of Languages
         </h1>
-        <p class="text-xl md:text-2xl mb-8 font-light">
+        <p class="text-xl md:text-2xl mb-8 font-light max-w-2xl mx-auto">
             Start your journey to fluency with our expert-crafted lessons and interactive quizzes.
         </p>
         <a href="{% url 'sign_up' %}" class="bg-white text-teal-600 font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:bg-gray-100 transition-colors duration-300">
@@ -21,13 +22,30 @@
     </h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for language in languages %}
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center border-t-4 border-indigo-500 hover:shadow-xl transition-shadow duration-300">
-            <h3 class="text-2xl font-semibold text-gray-900 mb-2">{{ language.name }}</h3>
-            <p class="text-gray-600 mb-4">{{ language.description }}</p>
-            <a href="{% url 'language_detail' pk=language.pk %}" class="text-indigo-600 font-medium hover:text-indigo-500 transition-colors duration-300">
-                View Lessons &rarr;
-            </a>
-        </div>
+        <a href="{% url 'language_detail' pk=language.pk %}" class="relative group block rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
+            {% comment %} Conditional image display {% endcomment %}
+            {% if language.name == 'Swahili' %}
+            <img src="{% static 'images/swahili.png' %}" alt="Swahili culture" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out">
+            {% elif language.name == 'French' %}
+            <img src="{% static 'images/france.png' %}" alt="French culture" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out">
+            {% else %}
+            <img src="{% static 'images/placeholder.jpg' %}" alt="Language Placeholder" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out">
+            {% endif %}
+
+            <div class="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-20 transition-colors duration-300"></div>
+            
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white relative z-10">
+                <h3 class="text-3xl font-bold text-gray-500">{{ language.name }}</h3>
+                <p class="text-sm text-gray-600 mt-2 transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                    {{ language.description }}
+                </p>
+                <span class="mt-4 text-blue-500 inline-block font-semibold border-b-2 border-white pb-1">
+                    View Lessons &rarr;
+                </span>
+            </div>
+        </a>
+        {% empty %}
+        <p class="text-gray-500 text-center col-span-full">No languages available at the moment.</p>
         {% endfor %}
     </div>
 </div>
@@ -53,5 +71,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

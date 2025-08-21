@@ -10,7 +10,19 @@ def home(request):
     languages = Language.objects.all()
     reviews = Review.objects.all()
 
-    return render(request, 'home.html', {'languages': languages, 'reviews':reviews})
+    languages_images = {
+        'Swahili': 'images/france.png',
+        'French': 'images/france.png',
+
+    }
+
+    context = {
+        'languages': languages,
+        'reviews': reviews,
+        'languages_images': languages_images,
+    }
+
+    return render(request, 'home.html', context)
      
 
 def language_detail(request, pk):
