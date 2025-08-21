@@ -15,10 +15,11 @@ def language_detail(request, pk):
     return render(request, 'language_detail.html', {'language:':language, 'lesson':language.lessons.all()})
 
 
+
 def lesson_detail(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk)
 
-    return render(request, 'lesson_detail.html', {'lesson': lesson, 'vocab': lesson.vocab.all()})
+    return render(request, 'lesson_detail.html', {'lesson': lesson, 'vocab': lesson.vocabulary_set.all()})
 
 
 @login_required

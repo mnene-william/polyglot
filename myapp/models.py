@@ -52,6 +52,16 @@ class UserProgress(models.Model):
 
     def __str__ (self):
         return f"{self.user.username} - {self.lesson.title} - {self.score}"
+    
+
+class Review(models.Model):
+    author = models.CharField(max_length=100)
+    text = models.TextField()
+    rating = models.IntegerField()
+    language = models.ForeignKey('Language', on_delete=models.CASCADE, related_name='reviews')
+
+    def __str__ (self):
+        return f'Review by {self.author} for {self.language}'
 
 
     
