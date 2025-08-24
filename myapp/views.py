@@ -24,7 +24,7 @@ def home(request):
 
     return render(request, 'home.html', context)
      
-
+@login_required
 def language_detail(request, pk):
     language = get_object_or_404(Language, pk=pk)
 
@@ -33,7 +33,7 @@ def language_detail(request, pk):
     return render(request, 'language_detail.html', {'language':language, 'lessons': lessons})
 
 
-
+@login_required
 def lesson_detail(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk)
 
@@ -102,6 +102,7 @@ def quiz_result(request, lesson_id):
         request.session.pop(key, None)
 
     return render(request, 'quiz_result.html', {'lesson': lesson, 'score': score, 'total':total, 'percent': up.score})
+
 
 
 
