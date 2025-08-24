@@ -23,11 +23,20 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for language in languages %}
         <a href="{% url 'language_detail' pk=language.pk %}" class="relative group block rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
-            {% comment %} Conditional image display {% endcomment %}
+
             {% if language.name == 'Swahili' %}
             <img src="{% static 'images/swahili.png' %}" alt="Swahili culture" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out">
+
             {% elif language.name == 'French' %}
             <img src="{% static 'images/france.png' %}" alt="French culture" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out">
+
+            {% elif language.name == 'Spanish' %}
+            <img src="{% static 'images/spanish.png' %}" alt="French culture" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out">
+
+
+            {% elif language.name == 'Italian' %}
+            <img src="{% static 'images/italy.png' %}" alt="French culture" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out">
+            
             {% else %}
             <img src="{% static 'images/placeholder.jpg' %}" alt="Language Placeholder" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out">
             {% endif %}
@@ -47,6 +56,8 @@
         {% empty %}
         <p class="text-gray-500 text-center col-span-full">No languages available at the moment.</p>
         {% endfor %}
+
+        
     </div>
 </div>
 
@@ -62,7 +73,7 @@
                 <div class="flex items-center">
                     <span class="text-xl font-bold text-gray-900 mr-2">{{ review.rating }}</span>
                     <span class="text-yellow-500">
-                        ⭐⭐⭐⭐⭐
+                        
                     </span>
                 </div>
                 <p class="text-sm font-medium text-gray-500 mt-2">- {{ review.author }}</p>
