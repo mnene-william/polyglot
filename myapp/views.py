@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
 from django.contrib.auth import login, logout
+from django.contrib import messages
 
 
 # Create your views here.
@@ -124,4 +125,35 @@ def sign_up(request):
 def log_out(request):
     logout(request)
     return redirect('home')
+
+
+
+def submit_review(request):
+
+    if request.method == 'POST':
+
+        author = request.POST.get('author')
+        review = request.POST.get('review')
+        rating = request.POST.get('rating')
+
+        if author and review and rating:
+          try:
+
+            rating = int(rating)
+
+            Review.objects.create(author=author, review=review, rating=rating)
+
+            messages.success(request, 'Thank you for Review!It has been submitted successfully!')
+
+          except:
+              messages.error(request, 'Invalid rating. Please enter a number between 1 and 5')
+              
+              return render(request, 'review.html')
+        
+        else:
+            messages.error(request, 'All fields are required.')
+
+    return render(request, 'review.html')
+        
+
 

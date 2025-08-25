@@ -9,17 +9,25 @@
     </div>
 
     {% if vocabularies %}
+
     <div>
         <h2 class="text-2xl font-bold text-teal-500 mb-4">Vocabulary</h2>
-        <div class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {% for vocab in vocabularies %}
-            <div class="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200">
-                <p class="text-lg font-medium text-gray-800">{{ vocab.word }} = {{ vocab.translation }}</p>
+
+            <div class="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200 flex items-center justify-between vocab-item cursor-pointer" data-word="{{ vocab.word }}">
+                <p class="text-lg font-medium text-gray-800">{{ vocab.word }}</p>
+                <div class="flex items-center space-x-2">
+
+                    <p class="text-gray-600">{{ vocab.translation }}</p>
+
+                </div>
             </div>
+
             {% endfor %}
         </div>
+        
     </div>
-
     {% endif %}
 
     <div class="mt-8">
@@ -31,12 +39,11 @@
         </div>
     </div>
 
-
     <div class="mt-8 text-center">
         <a href="{% url 'language_detail' pk=lesson.language.pk %}" class="font-medium text-indigo-600 hover:text-indigo-500 transition duration-300">
             &larr; Back to lessons
         </a>
     </div>
-
 </div>
 {% endblock %}
+
