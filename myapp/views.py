@@ -130,30 +130,73 @@ def log_out(request):
 
 def submit_review(request):
 
+    languages = Language.objects.all()
+
     if request.method == 'POST':
 
         author = request.POST.get('author')
-        review = request.POST.get('review')
+        text = request.POST.get('review_text')
         rating = request.POST.get('rating')
 
-        if author and review and rating:
+        language_id = request.POST.get('language')
+          
+        if author and text and rating and language_id:
           try:
 
             rating = int(rating)
 
-            Review.objects.create(author=author, review=review, rating=rating)
+            all_languages = get_object_or_404(Language, pk=language_id)
+
+            Review.objects.create(author=author, text=text, rating=rating, language=all_languages)
 
             messages.success(request, 'Thank you for Review!It has been submitted successfully!')
 
+            return redirect('home')
+
           except:
-              messages.error(request, 'Invalid rating. Please enter a number between 1 and 5')
+              messages.error(request, 'Invalid form submission. Please enter a number between 1 and 5')
+              languages  = Language.objects.all()
               
               return render(request, 'review.html')
+             
         
         else:
             messages.error(request, 'All fields are required.')
+            languages  = Language.objects.all()
 
-    return render(request, 'review.html')
-        
+    return render(request, 'review.html', {'languages':languages})
+
+
+def user_profile(request):
+ 
+
+    # Get all UserProgress objects for the current user
+    user_progress_entries = UserProgress.objects.filter(user=request.user)
+    
+    # Calculate the number of completed lessons
+    completed_lessons_count = user_progress_entries.filter(completed=True).count()
+    
+    # Get the total number of available lessons in the system
+    total_lessons_count = Lesson.objects.all().count()
+    
+    # Calculate the progress percentage, handling division by zero
+    progress_percentage = 0
+    if total_lessons_count > 0:
+        progress_percentage = int((completed_lessons_count / total_lessons_count) * 100)
+
+    # Get the titles of the completed lessons
+    completed_lessons_list = [
+        entry.lesson.title for entry in user_progress_entries.filter(completed=True)
+    ]
+
+    context = {
+        'user': request.user,
+        'completed_lessons_count': completed_lessons_count,
+        'total_lessons_count': total_lessons_count,
+        'progress_percentage': progress_percentage,
+        'completed_lessons_list': completed_lessons_list,
+    }
+    
+    return render(request, 'userprofile.html', context)
 
 

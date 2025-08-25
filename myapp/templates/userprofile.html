@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div class="px-6 py-8 sm:px-10 sm:py-10">
+            
+            <div class="flex flex-col items-center justify-center text-center">
+                <div class="w-24 h-24 flex items-center justify-center bg-indigo-500 text-white rounded-full font-bold text-5xl mb-4 shadow-lg">
+                    <span>{{ user.email.0 }}</span>
+                </div>
+                <h2 class="text-3xl font-extrabold text-gray-900">
+                    Your Profile
+                </h2>
+                <p class="mt-2 text-sm text-gray-500">
+                    {{ user.email }}
+                </p>
+            </div>
+
+            <div class="border-t border-gray-200 mt-8 pt-8">
+                
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-xl leading-6 font-medium text-gray-900 mb-2">
+                            Your Progress
+                        </h3>
+                        <p class="text-sm text-gray-500">
+                            You have completed {{ completed_lessons_count }} out of {{ total_lessons_count }} lessons.
+                        </p>
+                    </div>
+
+                    
+                    <div>
+                        <div class="h-4 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-500 transition-all duration-500 ease-out rounded-full"><div class="h-full bg-indigo-500 transition-all duration-500 ease-out rounded-full" style="width: {{ progress_percentage }}"></div></div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2 text-right font-medium">
+                            {{ progress_percentage }}% Complete
+                        </p>
+                    </div>
+
+                    
+                    <div>
+                        <h4 class="text-lg font-medium text-gray-800 mb-3">
+                            Completed Lessons
+                        </h4>
+                        {% if completed_lessons_list %}
+                            <ul class="divide-y divide-gray-200">
+                                {% for lesson_title in completed_lessons_list %}
+                                    <li class="py-3 flex items-center justify-between">
+                                        <span class="text-gray-700">{{ lesson_title }}</span>
+                                        <span>
+                                            
+                                            <svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-gray-500">You haven't completed any lessons yet. Start your learning journey now!</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
