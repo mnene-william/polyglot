@@ -166,27 +166,31 @@ def submit_review(request):
 
     return render(request, 'review.html', {'languages':languages})
 
-
+@login_required
 def user_profile(request):
  
 
-    # Get all UserProgress objects for the current user
+
     user_progress_entries = UserProgress.objects.filter(user=request.user)
     
-    # Calculate the number of completed lessons
+
     completed_lessons_count = user_progress_entries.filter(completed=True).count()
     
-    # Get the total number of available lessons in the system
+
     total_lessons_count = Lesson.objects.all().count()
     
-    # Calculate the progress percentage, handling division by zero
+
     progress_percentage = 0
     if total_lessons_count > 0:
         progress_percentage = int((completed_lessons_count / total_lessons_count) * 100)
 
-    # Get the titles of the completed lessons
+
     completed_lessons_list = [
-        entry.lesson.title for entry in user_progress_entries.filter(completed=True)
+        {
+            'title': entry.lesson.title,
+            'language': entry.lesson.language.name  # Assuming Lesson has a foreign key to a Language model with a 'name' field
+        } 
+        for entry in user_progress_entries.filter(completed=True)
     ]
 
     context = {

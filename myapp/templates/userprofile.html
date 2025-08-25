@@ -4,7 +4,7 @@
 <div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
         <div class="px-6 py-8 sm:px-10 sm:py-10">
-            
+
             <div class="flex flex-col items-center justify-center text-center">
                 <div class="w-24 h-24 flex items-center justify-center bg-indigo-500 text-white rounded-full font-bold text-5xl mb-4 shadow-lg">
                     <span>{{ user.email.0 }}</span>
@@ -29,13 +29,15 @@
                         </p>
                     </div>
 
-                    
-                    <div>
-                        <div class="h-4 bg-gray-200 rounded-full overflow-hidden">
-                            <div class="h-full bg-indigo-500 transition-all duration-500 ease-out rounded-full"><div class="h-full bg-indigo-500 transition-all duration-500 ease-out rounded-full" style="width: {{ progress_percentage }}"></div></div>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-2 text-right font-medium">
-                            {{ progress_percentage }}% Complete
+
+                    <div class="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+                         <div
+                            id="progressBar"
+                            class="h-full bg-indigo-500 transition-all duration-500 ease-out rounded-full"
+                            style="width: 0%;"
+                        ></div>
+                        <p id="progressText" class="absolute inset-0 flex items-center justify-end pr-2 text-xs font-medium text-gray-600">
+                            0% Complete
                         </p>
                     </div>
 
@@ -46,11 +48,15 @@
                         </h4>
                         {% if completed_lessons_list %}
                             <ul class="divide-y divide-gray-200">
-                                {% for lesson_title in completed_lessons_list %}
+                                {% for lesson in completed_lessons_list %}
                                     <li class="py-3 flex items-center justify-between">
-                                        <span class="text-gray-700">{{ lesson_title }}</span>
+                                        <span class="flex items-center space-x-2 text-gray-700">
+                                            <span>{{ lesson.title }}</span>
+                                            <span class="text-xs text-gray-500 font-medium px-2 py-0.5 rounded-full bg-gray-100">
+                                                {{ lesson.language }}
+                                            </span>
+                                        </span>
                                         <span>
-                                            
                                             <svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
@@ -67,4 +73,41 @@
         </div>
     </div>
 </div>
+
+<script>
+
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+
+    const finalProgress = parseFloat("{{ progress_percentage }}");
+
+
+    let currentProgress = 0;
+    const increment = 1; 
+    const intervalTime = 10;
+
+
+    const intervalId = setInterval(() => {
+
+        if (currentProgress < finalProgress) {
+
+            currentProgress += increment;
+
+
+            if (currentProgress > finalProgress) {
+                currentProgress = finalProgress;
+            }
+
+ 
+            progressBar.style.width = `${currentProgress}%`;
+
+            progressText.textContent = `${Math.floor(currentProgress)}% Complete`;
+        } else {
+
+            clearInterval(intervalId);
+        }
+    }, intervalTime);
+</script>
+
 {% endblock %}
