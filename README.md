@@ -18,3 +18,12 @@ This application is designed for a variety of users, including:
 Beginner Language Learners: Users who are just starting their language journey and need a simple, structured way to learn fundamental concepts.
 
 Intermediate Learners: Individuals looking to test and reinforce their knowledge through interactive quizzes.
+
+
+🛠️ Technologies Used
+Backend: Django, Python
+
+Frontend: HTML, Tailwind CSS, JavaScript
+
+Database: SQLite (default for development)
+
