@@ -46,6 +46,7 @@
                         <h4 class="text-lg font-medium text-gray-800 mb-3">
                             Completed Lessons
                         </h4>
+                        
                         {% if completed_lessons_list %}
                             <ul class="divide-y divide-gray-200">
                                 {% for lesson in completed_lessons_list %}
@@ -69,6 +70,16 @@
                         {% endif %}
                     </div>
                 </div>
+
+                <div class="mt-10 pt-6 border-t border-gray-200 text-center">
+                    <a href="{% url 'review' %}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-teal-600 hover:bg-teal-700 md:py-4 md:text-lg md:px-10 transition-colors duration-300">
+                        Leave a Review
+                        <svg class="ml-2 -mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-4.5a3 3 0 115 5L14 17l-3 1 1-3 5.5-5.5z" />
+                        </svg>
+                    </a>
+                </div>
+
             </div>
         </div>
     </div>

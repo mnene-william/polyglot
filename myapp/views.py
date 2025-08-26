@@ -47,17 +47,36 @@ def lesson_detail(request, pk):
 def quiz_view(request, lesson_id):
     lesson = get_object_or_404(Lesson, pk=lesson_id)
 
-    question_ids = list(lesson.questions.values_list('id', flat=True))
+    questions = lesson.questions.all()
+
+    total_questions = questions.count()
+
+    quiz_state = request.session.get('quiz_state', {})
+
+    
+
+    
     
     if 'q_index' not in request.session or request.GET.get('restart'):
         request.session['q_index'] = 0
     
         request.session['score'] = 0
 
+        question_ids = list(lesson.questions.values_list('id', flat=True))
+
         request.session['question_ids'] = question_ids
+        request.session['feedback'] = None
 
 
     index = request.session['q_index']
+
+    question_ids = request.session.get('question_ids', [])
+
+    if request.GET.get('next_question'):
+        request.session['q_index'] += 1
+        request.session['feedback'] = None
+        return redirect('quiz_view', lesson_id=lesson.id)
+
 
     if index >= len(question_ids):
 
@@ -68,15 +87,32 @@ def quiz_view(request, lesson_id):
     if request.method == 'POST':
         selected = request.POST.get('answer')
 
-        if selected and selected.strip() == question.correct_answer.strip():
+        is_correct = selected and selected.strip() == question.correct_answer.strip()
 
-            request.session['score'] += 1
+        request.session['feedback'] = {
+            'is_correct': is_correct,
+            'user_selected': selected,
+            'correct_answer': question.correct_answer
+        }
 
-        request.session['q_index'] = index + 1
+        if is_correct:
+            request.session['q_index'] = index + 1
 
         return redirect('quiz_view', lesson_id=lesson.id)
     
-    return render(request, 'quiz_view.html', {'lesson':lesson, 'question': question, 'index': index+1, 'total': len(question_ids)})
+    feedback = request.session.get('feedback')
+
+    context = {
+        'lesson': lesson,
+        'question': question,
+        'index': index + 1,
+        'total': len(question_ids),
+        'feedback': feedback,
+    }
+
+    return render(request, 'quiz_view.html', context)
+
+
 
 
 @login_required
@@ -188,7 +224,7 @@ def user_profile(request):
     completed_lessons_list = [
         {
             'title': entry.lesson.title,
-            'language': entry.lesson.language.name  # Assuming Lesson has a foreign key to a Language model with a 'name' field
+            'language': entry.lesson.language.name  
         } 
         for entry in user_progress_entries.filter(completed=True)
     ]

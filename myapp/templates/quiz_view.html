@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8 flex justify-center items-center min-h-screen">
@@ -8,6 +8,21 @@
         
         <p class="text-gray-600 text-sm mb-6">Question {{ index }} of {{ total }}</p>
 
+        <!-- Feedback Message Section -->
+        {% if feedback %}
+            <div class="mb-4 p-4 rounded-lg
+                {% if feedback.is_correct %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                {% if feedback.is_correct %}
+                    <p class="font-semibold text-lg">Correct! 🎉</p>
+                {% else %}
+                    <p class="font-semibold text-lg">Incorrect! 😔</p>
+                    <p class="text-sm mt-1">The correct answer was: 
+                        <span class="font-bold">{{ feedback.correct_answer }}</span>
+                    </p>
+                {% endif %}
+            </div>
+        {% endif %}
+
         <form method="post">
             {% csrf_token %}
             <div class="bg-gray-100 rounded-lg p-6 mb-6">
@@ -15,26 +30,54 @@
             </div>
             
             <div class="space-y-4">
-                <label class="block">
-                    <input type="radio" name="answer" value="{{ question.option_a }}" class="mr-2 text-indigo-600 focus:ring-indigo-500">
+                <label class="block p-3 rounded-lg cursor-pointer transition-colors duration-200 
+                    {% if feedback %}
+                        {% if feedback.correct_answer|lower == question.option_a|lower %}bg-green-200 border-2 border-green-500{% endif %}
+                        {% if not feedback.is_correct and feedback.user_selected|lower == question.option_a|lower %}bg-red-200 border-2 border-red-500{% endif %}
+                    {% else %}
+                        bg-gray-100 hover:bg-gray-200
+                    {% endif %}">
+                    <input type="radio" name="answer" value="{{ question.option_a }}" class="mr-2 hidden"
+                           {% if feedback %}disabled{% endif %}
+                           {% if feedback and feedback.user_selected|lower == question.option_a|lower %}checked{% endif %}>
                     <span class="text-gray-700">{{ question.option_a }}</span>
                 </label>
-                <label class="block">
-                    <input type="radio" name="answer" value="{{ question.option_b }}" class="mr-2 text-indigo-600 focus:ring-indigo-500">
+                <label class="block p-3 rounded-lg cursor-pointer transition-colors duration-200 
+                    {% if feedback %}
+                        {% if feedback.correct_answer|lower == question.option_b|lower %}bg-green-200 border-2 border-green-500{% endif %}
+                        {% if not feedback.is_correct and feedback.user_selected|lower == question.option_b|lower %}bg-red-200 border-2 border-red-500{% endif %}
+                    {% else %}
+                        bg-gray-100 hover:bg-gray-200
+                    {% endif %}">
+                    <input type="radio" name="answer" value="{{ question.option_b }}" class="mr-2 hidden"
+                           {% if feedback %}disabled{% endif %}
+                           {% if feedback and feedback.user_selected|lower == question.option_b|lower %}checked{% endif %}>
                     <span class="text-gray-700">{{ question.option_b }}</span>
                 </label>
-                <label class="block">
-                    <input type="radio" name="answer" value="{{ question.option_c }}" class="mr-2 text-indigo-600 focus:ring-indigo-500">
+                <label class="block p-3 rounded-lg cursor-pointer transition-colors duration-200 
+                    {% if feedback %}
+                        {% if feedback.correct_answer|lower == question.option_c|lower %}bg-green-200 border-2 border-green-500{% endif %}
+                        {% if not feedback.is_correct and feedback.user_selected|lower == question.option_c|lower %}bg-red-200 border-2 border-red-500{% endif %}
+                    {% else %}
+                        bg-gray-100 hover:bg-gray-200
+                    {% endif %}">
+                    <input type="radio" name="answer" value="{{ question.option_c }}" class="mr-2 hidden"
+                           {% if feedback %}disabled{% endif %}
+                           {% if feedback and feedback.user_selected|lower == question.option_c|lower %}checked{% endif %}>
                     <span class="text-gray-700">{{ question.option_c }}</span>
                 </label>
             </div>
             
-            <button type="submit" class="mt-8 w-full rounded-lg bg-indigo-600 py-3 px-4 text-white font-semibold transition-colors duration-200 hover:bg-indigo-700">
-                Submit Answer
-            </button>
+            {% if not feedback %}
+                <button type="submit" class="mt-8 w-full rounded-lg bg-indigo-600 py-3 px-4 text-white font-semibold transition-colors duration-200 hover:bg-indigo-700">
+                    Submit Answer
+                </button>
+            {% else %}
+                <a href="{% url 'quiz_view' lesson_id=lesson.id %}?next_question=true" class="mt-8 block w-full text-center rounded-lg bg-indigo-600 py-3 px-4 text-white font-semibold transition-colors duration-200 hover:bg-indigo-700">
+                    Next Question
+                </a>
+            {% endif %}
         </form>
     </div>
 </div>
 {% endblock %}
-<br>
-<br>
