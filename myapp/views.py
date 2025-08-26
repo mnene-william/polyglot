@@ -45,100 +45,110 @@ def lesson_detail(request, pk):
 
 @login_required
 def quiz_view(request, lesson_id):
+    """
+    Manages the state and flow of the quiz using the user's session.
+    """
     lesson = get_object_or_404(Lesson, pk=lesson_id)
-
     questions = lesson.questions.all()
-
     total_questions = questions.count()
 
+    # Initialize or retrieve quiz state from the session.
     quiz_state = request.session.get('quiz_state', {})
-
-    
-
-    
-    
-    if 'q_index' not in request.session or request.GET.get('restart'):
-        request.session['q_index'] = 0
-    
-        request.session['score'] = 0
-
-        question_ids = list(lesson.questions.values_list('id', flat=True))
-
-        request.session['question_ids'] = question_ids
-        request.session['feedback'] = None
-
-
-    index = request.session['q_index']
-
-    question_ids = request.session.get('question_ids', [])
-
-    if request.GET.get('next_question'):
-        request.session['q_index'] += 1
-        request.session['feedback'] = None
-        return redirect('quiz_view', lesson_id=lesson.id)
-
-
-    if index >= len(question_ids):
-
-        return redirect('quiz_result', lesson_id= lesson.id)
-    
-    question = QuizQuestion.objects.get(id=request.session['question_ids'][index])
-
-    if request.method == 'POST':
-        selected = request.POST.get('answer')
-
-        is_correct = selected and selected.strip() == question.correct_answer.strip()
-
-        request.session['feedback'] = {
-            'is_correct': is_correct,
-            'user_selected': selected,
-            'correct_answer': question.correct_answer
+    if quiz_state.get('lesson_id') != lesson_id:
+        # Start a new quiz if this is a different lesson or a new session.
+        quiz_state = {
+            'lesson_id': lesson_id,
+            'current_index': 0,
+            'score': 0,
         }
+        request.session['quiz_state'] = quiz_state
+        # Clear any old feedback when a new quiz starts.
+        if 'feedback' in request.session:
+            del request.session['feedback']
+        request.session.modified = True
 
-        if is_correct:
-            request.session['q_index'] = index + 1
+    current_index = quiz_state.get('current_index')
+    score = quiz_state.get('score')
 
-        return redirect('quiz_view', lesson_id=lesson.id)
+    # Handle the submission of a user's answer.
+    if request.method == 'POST':
+        user_answer = request.POST.get('answer').strip().lower()
+
+        if current_index < total_questions:
+            current_question = questions[current_index]
+            correct_answer = current_question.correct_answer.strip().lower()
+
+            is_correct = user_answer == correct_answer
+
+            # Store feedback in the session for the next page load.
+            request.session['feedback'] = {
+                'is_correct': is_correct,
+                'correct_answer': current_question.correct_answer,
+            }
+
+            if is_correct:
+                quiz_state['score'] += 1
+
+            quiz_state['current_index'] += 1
+            request.session['quiz_state'] = quiz_state
+            # Force the session to be saved after processing the answer. 
+            request.session.modified = True
+
+
+
+        return redirect('quiz_view', lesson_id=lesson_id)
+        
+
+    # Check if the quiz is complete.
+    if current_index >= total_questions:
+        percentage = (score / total_questions) * 100 if total_questions > 0 else 0
+        
+        # Reset the session data for a clean slate.
+        if 'quiz_state' in request.session:
+            del request.session['quiz_state']
+        # Clear feedback when the quiz ends.
+        if 'feedback' in request.session:
+            del request.session['feedback']
+        request.session.modified = True
+        
+        context = {
+            'lesson': lesson,
+            'score': score,
+            'total': total_questions,
+            'percent': int(percentage),
+        }
+        return render(request, 'quiz_result.html', context)
+
+    # Display the current question.
+    current_question = questions[current_index]
+
+    # Retrieve and clear feedback from the session.
+    feedback = request.session.pop('feedback', None)
     
-    feedback = request.session.get('feedback')
+    # We don't need to force a save here anymore because it's handled in the POST block.
 
     context = {
         'lesson': lesson,
-        'question': question,
-        'index': index + 1,
-        'total': len(question_ids),
+        'question': current_question,
+        'index': current_index + 1,
+        'total': total_questions,
         'feedback': feedback,
     }
-
+    
     return render(request, 'quiz_view.html', context)
 
 
-
-
-@login_required
-def quiz_result(request, lesson_id):
-
-    lesson  = get_object_or_404(Lesson, pk=lesson_id)
-
-    score = request.session.get('score', 0)
-
-    total = len(request.session.get('question_ids', []))
-
-
-    up, created = UserProgress.objects.get_or_create(user=request.user, lesson=lesson)
-
-    up.score = int(score / max(total, 1) * 100)
     
-    up.completed = True
-
-    up.save()
 
 
-    for key in ('q_index', 'score', 'question_ids'):
 
-        request.session.pop(key, None)
 
-    return render(request, 'quiz_result.html', {'lesson': lesson, 'score': score, 'total':total, 'percent': up.score})
+
+    
+    
+
+
+
 
 
 
