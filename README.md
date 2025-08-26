@@ -25,5 +25,6 @@ Backend: Django, Python
 
 Frontend: HTML, Tailwind CSS, JavaScript
 
-Database: SQLite (default for development)
+Database: Postgresql (default for development)
+
 
