@@ -7,10 +7,11 @@ from django.contrib import messages
 
 
 # Create your views here.
-def home(request, pk):
+def home(request):
+   
     languages = Language.objects.all()
     reviews = Review.objects.all()
-    language = get_object_or_404(Language, pk=pk)
+    
 
     languages_images = {
         'Swahili': 'images/france.png',
@@ -22,7 +23,7 @@ def home(request, pk):
         'languages': languages,
         'reviews': reviews,
         'languages_images': languages_images,
-        'language': language,
+        
     }
 
     return render(request, 'home.html', context)
